@@ -18,10 +18,30 @@ const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
 });
 
+function verifyJWT(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).send({ message: 'UnAuthorized access' });
+  }
+  const token = authHeader.split(' ')[1];
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
+    if (err) {
+      return res.status(403).send({ message: 'Forbidden access' });
+    }
+    req.decoded = decoded;
+    next();
+  });
+}
+
 async function run() {
   try {
     await client.connect();
-    const serviceCollection = client.db('').collection('');
+    const serviceCollection = client.db('manufacturer').collection('products');
+
+    app.get('/product', async (req, res) => {
+      const products = await serviceCollection.find({}).toArray();
+      res.send(products);
+    });
   } finally {
   }
 }
@@ -29,7 +49,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-  res.send('Hello From assignment-12!');
+  res.send('Hello From Computer Zone!');
 });
 
 app.listen(port, () => {
