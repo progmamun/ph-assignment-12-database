@@ -59,6 +59,13 @@ async function run() {
       res.send(products);
     });
 
+    app.get('/product/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const product = await serviceCollection.findOne(query);
+      res.send(product);
+    });
+
     // user api
     app.get('/user', verifyJWT, async (req, res) => {
       const users = await userCollection.find().toArray();
