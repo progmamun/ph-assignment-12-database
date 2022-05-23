@@ -39,6 +39,10 @@ async function run() {
     const serviceCollection = client.db('manufacturer').collection('products');
     const userCollection = client.db('manufacturer').collection('users');
     const bookingCollection = client.db('manufacturer').collection('purchases');
+    const reviewCollection = client.db('manufacturer').collection('reviews');
+    const newProductCollection = client
+      .db('manufacturer')
+      .collection('newProducts');
 
     // verify admin
     const verifyAdmin = async (req, res, next) => {
@@ -104,6 +108,20 @@ async function run() {
         { expiresIn: '1d' }
       );
       res.send({ result, token });
+    });
+
+    // add a new product
+    app.get('/service', async (req, res) => {
+      const query = {};
+      const cursor = serviceCollection.find(query).project({ name: 1 });
+      const services = await cursor.toArray();
+      res.send(services);
+    });
+
+    app.post('/newProduct', verifyJWT, verifyAdmin, async (req, res) => {
+      const product = req.body;
+      const result = await newProductCollection.insertOne(product);
+      res.send(result);
     });
 
     // Purchase api
