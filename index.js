@@ -134,9 +134,26 @@ async function run() {
       res.send(services);
     });
 
+    app.post('/product', verifyJWT, verifyAdmin, async (req, res) => {
+      const product = req.body;
+      const result = await newProductCollection.insertOne(product);
+      res.send(result);
+    });
     app.post('/newProduct', verifyJWT, verifyAdmin, async (req, res) => {
       const product = req.body;
       const result = await newProductCollection.insertOne(product);
+      res.send(result);
+    });
+
+    // reviews api
+    app.get('/review', async (req, res) => {
+      const reviews = await reviewCollection.find().toArray();
+      res.send(reviews);
+    });
+
+    app.post('/review', async (req, res) => {
+      const review = req.body;
+      const result = await reviewCollection.insertOne(review);
       res.send(result);
     });
 
