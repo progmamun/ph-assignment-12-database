@@ -103,9 +103,9 @@ async function run() {
 
     // user delete api
     app.delete('/user/:id', verifyJWT, verifyAdmin, async (req, res) => {
-      const email = req.params.email;
-      const filter = { email: email };
-      const result = await userCollection.deleteOne(filter);
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await userCollection.deleteOne(query);
       res.send(result);
     });
 
