@@ -108,11 +108,8 @@ async function run() {
       const updateUser = {
         $set: {
           name: user.name,
-          phone: user.phone,
-          about: user.about,
-          education: user.education,
-          professional: user.professional,
           address: user.address,
+          facebook: user.facebook,
           linkedin: user.linkedin,
           img: user.img,
         },
