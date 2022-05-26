@@ -84,6 +84,35 @@ async function run() {
       res.send(users);
     });
 
+    // user update api
+    /*  app.put('/user/:id', verifyJWT, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const user = await userCollection.findOne(query);
+      const { name, email, password, role } = req.body;
+      const update = {
+        name: name || user.name,
+        email: email || user.email,
+        password: password || user.password,
+        role: role || user.role,
+      };
+      const result = await userCollection.updateOne(query, { $set: update });
+      res.send(result);
+    }); */
+    app.put('/user/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const user = await userCollection.findOne(query);
+      const { img, fb, linkedin } = req.body;
+      const update = {
+        img: img || user.img,
+        fb: fb || user.fb,
+        linkedin: linkedin || user.linkedin,
+      };
+      const result = await userCollection.updateOne(query, { $set: update });
+      res.send(result);
+    });
+
     app.get('/admin/:email', async (req, res) => {
       const email = req.params.email;
       const user = await userCollection.findOne({ email: email });
@@ -159,10 +188,22 @@ async function run() {
 
     // Purchase api
     app.get('/booking', verifyJWT, async (req, res) => {
-      const patient = req.query.patient;
+      const user = req.query.user;
       const decodedEmail = req.decoded.email;
-      if (patient === decodedEmail) {
-        const query = { patient: patient };
+      if (user === decodedEmail) {
+        const query = { user: user };
+        const bookings = await bookingCollection.find(query).toArray();
+        return res.send(bookings);
+      } else {
+        return res.status(403).send({ message: 'forbidden access' });
+      }
+    });
+
+    app.get('/booking', verifyJWT, async (req, res) => {
+      const user = req.query.user;
+      const decodedEmail = req.decoded.email;
+      if (user === decodedEmail) {
+        const query = { user: user };
         const bookings = await bookingCollection.find(query).toArray();
         return res.send(bookings);
       } else {
@@ -176,24 +217,13 @@ async function run() {
       const booking = await bookingCollection.findOne(query);
       res.send(booking);
     });
-    app.get('/booking/:id', verifyJWT, async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const booking = await bookingCollection.findOne(query);
-      res.send(booking);
-    });
 
     app.post('/booking', async (req, res) => {
       const booking = req.body;
       const query = {
-        treatment: booking.treatment,
-        date: booking.date,
-        patient: booking.patient,
+        service: booking.service,
+        user: booking.user,
       };
-      const exists = await bookingCollection.findOne(query);
-      if (exists) {
-        return res.send({ success: false, booking: exists });
-      }
       const result = await bookingCollection.insertOne(booking);
       return res.send({ success: true, result });
     });
