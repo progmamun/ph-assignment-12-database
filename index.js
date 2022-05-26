@@ -199,6 +199,11 @@ async function run() {
     });
 
     // Purchase api
+    app.get('/bookings', verifyJWT, verifyAdmin, async (req, res) => {
+      const reviews = await bookingCollection.find().toArray();
+      res.send(reviews);
+    });
+
     app.get('/booking', verifyJWT, async (req, res) => {
       const user = req.query.user;
       const decodedEmail = req.decoded.email;
