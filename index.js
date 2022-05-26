@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -43,6 +44,9 @@ async function run() {
     const newProductCollection = client
       .db('manufacturer')
       .collection('newProducts');
+    const paymentCollection = client
+      .db('doctors_portal')
+      .collection('payments');
 
     // verify admin
     const verifyAdmin = async (req, res, next) => {
@@ -214,6 +218,26 @@ async function run() {
       };
       const result = await bookingCollection.insertOne(booking);
       res.send({ success: true, result });
+    });
+
+    // payment api stripe
+    app.patch('/booking/:id', verifyJWT, async (req, res) => {
+      const id = req.params.id;
+      const payment = req.body;
+      const filter = { _id: ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          paid: true,
+          transactionId: payment.transactionId,
+        },
+      };
+
+      const result = await paymentCollection.insertOne(payment);
+      const updatedBooking = await bookingCollection.updateOne(
+        filter,
+        updatedDoc
+      );
+      res.send(updatedBooking);
     });
   } finally {
   }
