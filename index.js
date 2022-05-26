@@ -231,7 +231,7 @@ async function run() {
     });
 
     // delete order
-    app.delete('/booking/:id', async (req, res) => {
+    app.delete('/booking/delete/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await bookingCollection.deleteOne(query);
