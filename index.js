@@ -232,7 +232,7 @@ async function run() {
 
     app.delete('/booking/:email', async (req, res) => {
       const email = req.params.email;
-      const query = { userEmail: email };
+      const query = { email: email };
       const result = await bookingCollection.deleteOne(query);
       res.send(result);
     });
