@@ -230,9 +230,16 @@ async function run() {
       res.send({ success: true, result });
     });
 
-    app.delete('/booking/:email', async (req, res) => {
+    /* app.delete('/booking/:email', async (req, res) => {
       const email = req.params.email;
       const query = { email: email };
+      const result = await bookingCollection.deleteOne(query);
+      res.send(result);
+    }); */
+    // delete order
+    app.delete('/booking/delete/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
       const result = await bookingCollection.deleteOne(query);
       res.send(result);
     });
