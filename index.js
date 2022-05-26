@@ -99,7 +99,7 @@ async function run() {
       const result = await userCollection.updateOne(query, { $set: update });
       res.send(result);
     }); */
-    app.put('/user/:id', async (req, res) => {
+    /* app.put('/user/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const user = await userCollection.findOne(query);
@@ -111,7 +111,7 @@ async function run() {
       };
       const result = await userCollection.updateOne(query, { $set: update });
       res.send(result);
-    });
+    }); */
 
     app.get('/admin/:email', async (req, res) => {
       const email = req.params.email;
@@ -199,18 +199,6 @@ async function run() {
       }
     });
 
-    app.get('/booking', verifyJWT, async (req, res) => {
-      const user = req.query.user;
-      const decodedEmail = req.decoded.email;
-      if (user === decodedEmail) {
-        const query = { user: user };
-        const bookings = await bookingCollection.find(query).toArray();
-        return res.send(bookings);
-      } else {
-        return res.status(403).send({ message: 'forbidden access' });
-      }
-    });
-
     app.get('/booking/:id', verifyJWT, async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -225,7 +213,7 @@ async function run() {
         user: booking.user,
       };
       const result = await bookingCollection.insertOne(booking);
-      return res.send({ success: true, result });
+      res.send({ success: true, result });
     });
   } finally {
   }
