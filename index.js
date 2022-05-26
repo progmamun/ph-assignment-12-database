@@ -100,33 +100,30 @@ async function run() {
     });
 
     // user update api
-    /*  app.put('/user/:id', verifyJWT, async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const user = await userCollection.findOne(query);
-      const { name, email, password, role } = req.body;
-      const update = {
-        name: name || user.name,
-        email: email || user.email,
-        password: password || user.password,
-        role: role || user.role,
+    app.put('user/:email', async (req, res) => {
+      const email = req.params.email;
+      const user = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updateUser = {
+        $set: {
+          name: user.name,
+          phone: user.phone,
+          about: user.about,
+          education: user.education,
+          professional: user.professional,
+          address: user.address,
+          linkedin: user.linkedin,
+          img: user.img,
+        },
       };
-      const result = await userCollection.updateOne(query, { $set: update });
+      const result = await userCollection.updateOne(
+        filter,
+        updateUser,
+        options
+      );
       res.send(result);
-    }); */
-    /* app.put('/user/:id', async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const user = await userCollection.findOne(query);
-      const { img, fb, linkedin } = req.body;
-      const update = {
-        img: img || user.img,
-        fb: fb || user.fb,
-        linkedin: linkedin || user.linkedin,
-      };
-      const result = await userCollection.updateOne(query, { $set: update });
-      res.send(result);
-    }); */
+    });
 
     app.get('/admin/:email', async (req, res) => {
       const email = req.params.email;
@@ -231,7 +228,7 @@ async function run() {
       res.send({ success: true, result });
     });
 
-    app.delete('/booking/:id', verifyJWT, async (req, res) => {
+    app.delete('/booking/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await bookingCollection.deleteOne(query);
