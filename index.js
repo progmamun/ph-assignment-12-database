@@ -44,9 +44,7 @@ async function run() {
     const newProductCollection = client
       .db('manufacturer')
       .collection('newProducts');
-    const paymentCollection = client
-      .db('doctors_portal')
-      .collection('payments');
+    const paymentCollection = client.db('manufacturer').collection('payments');
 
     // verify admin
     const verifyAdmin = async (req, res, next) => {
