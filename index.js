@@ -27,7 +27,7 @@ function verifyJWT(req, res, next) {
   const token = authHeader.split(' ')[1];
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
     if (err) {
-      return res.status(403).send({ message: 'Forbidden access' });
+      res.status(403).send({ message: 'Forbidden access' });
     }
     req.decoded = decoded;
     next();
@@ -106,7 +106,7 @@ async function run() {
     });
 
     // user update api
-    app.put('/user/:email', async (req, res) => {
+    app.put('user/:email', async (req, res) => {
       const email = req.params.email;
       const user = req.body;
       const filter = { email: email };
