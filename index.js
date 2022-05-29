@@ -99,6 +99,12 @@ async function run() {
       res.send(users);
     });
 
+    app.get('/user/:email', verifyJWT, async (req, res) => {
+      const email = req.params.email;
+      const user = await userCollection.findOne({ email: email });
+      res.send(user);
+    });
+
     // user update api
     app.put('user/:email', async (req, res) => {
       const email = req.params.email;
