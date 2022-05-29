@@ -106,7 +106,7 @@ async function run() {
     });
 
     // user update api
-    app.put('user/:email', async (req, res) => {
+    app.put('/user/:email', async (req, res) => {
       const email = req.params.email;
       const user = req.body;
       const filter = { email: email };
